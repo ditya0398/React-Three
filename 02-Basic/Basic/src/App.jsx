@@ -1,11 +1,21 @@
 import * as React from "react";
 import * as THREE from "three"
-import {useThree, useFrame} from '@react-three/fiber'
+import {useThree, extend, useFrame} from '@react-three/fiber'
 import { useRef } from 'react'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 // import the canvas element from r3f
 import { Canvas } from "@react-three/fiber";
 import Cube from "./Three-Code/Cube";
 
+
+extend({ OrbitControls })
+
+function Controls() {
+  const controls = useRef()
+  const { camera, gl } = useThree()
+  useFrame(() => controls.current.update())
+  return <orbitControls ref={controls} args={[camera, gl.domElement]} enableDamping dampingFactor={0.1} rotateSpeed={0.5} />
+}
 export default function App() {
   return (
     <div
@@ -17,12 +27,11 @@ export default function App() {
       left: 0,
     }}
   >
-    // create the canvas
+  
     <Canvas>
-      
-     
-   
+    <Controls />
       <Cube/>
+     
     </Canvas>
     </div>
   );
