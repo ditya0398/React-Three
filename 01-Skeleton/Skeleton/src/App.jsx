@@ -4,6 +4,15 @@ import { Canvas } from "@react-three/fiber";
 
 export default function App() {
   return (
+    <div
+    style={{
+      width: "100vw",
+      height: "100vh",
+      position: "absolute",
+      top: 0,
+      left: 0,
+    }}
+  >
     // create the canvas
     <Canvas>
       // create an ambient light
@@ -22,5 +31,6 @@ export default function App() {
         <meshStandardMaterial color="hotpink" />
       </mesh>
     </Canvas>
+    </div>
   );
 }
