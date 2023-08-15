@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as THREE from "three";
+import { Environment } from '@react-three/drei'
 // import the canvas element from r3f
 import {Stats, OrbitControls, Circle, ContactShadows} from "@react-three/drei"
 import { Canvas, useLoader, useThree, useFrame  } from "@react-three/fiber";
@@ -46,18 +47,25 @@ function ContactShadowsHelper(){
       </>
   )
   }
-  function LoadModel()
+  function LoadRoom()
   {
+    var textureLoader = new THREE.TextureLoader();
+    var texture = textureLoader.load('./pic.jpg');
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+
+    console.log(texture);
     const gltf = useLoader(GLTFLoader, './room.glb');
-  //   const { scene: defaultScene } = useThree(); // This is the main scene from the r3f context
-  //  scene.position.x = 3;
-  //   defaultScene.add(scene);
-    //const gltf = useLoader(GLTFLoader, './drawer.glb')
+     const { scene: defaultScene } = useThree(); // This is the main scene from the r3f context
+  
+    defaultScene.background = texture;
+    defaultScene.environment = texture;
+     
     gltf.scene.traverse(function (child) {
       if (child.isMesh) {
         if (child.name === "dimension_geo") {
           child.visible = false;
         }
+        child.material.envMap = texture;
         child.castShadow = true;
         child.receiveShadow = true;
       }
@@ -70,6 +78,14 @@ function ContactShadowsHelper(){
   }
   function LoadModel1()
   {
+
+    
+    var textureLoader = new THREE.TextureLoader();
+    var texture = textureLoader.load('./gymHdri.exr');
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+
+    console.log("texture");
+
     const gltf = useLoader(GLTFLoader, './drawer.glb');
     // const { scene: defaultScene } = useThree(); // This is the main scene from the r3f context
     // defaultScene.add(scene);
@@ -79,6 +95,7 @@ function ContactShadowsHelper(){
         if (child.name === "dimension_geo") {
           child.visible = false;
         }
+        child.material.envMap = texture;
         child.castShadow = true;
         child.receiveShadow = true;
       }
@@ -160,12 +177,15 @@ function ContactShadowsHelper(){
     );
     return (
       <scene ref={scene}>
-         <directionalLight position={[3.3, 1.0, 4.4]}  shadow-mapSize-width = {2048} shadow-mapSize-height = {2048}
-  castShadow />
-       <LoadModel/>
+       
+       <LoadRoom/>
       </scene>
     );
   }
+
+ /* <directionalLight position={[3.3, 1.0, 4.4]}  shadow-mapSize-width = {2048} shadow-mapSize-height = {2048}
+  castShadow />*/
+  
   function HeadsUpDisplay({ camera }) {
     const sceneRef = useRef();
     const sceneMemoized = useMemo(() => {
@@ -191,7 +211,7 @@ function ContactShadowsHelper(){
       if (sceneRef.current) {
         sceneRef.current.copy(sceneMemoized, true);
         sceneRef.current.updateMatrixWorld(true);
-        console.log(sceneRef.current);
+       
       }
     }, []);
     useFrame(
@@ -239,6 +259,7 @@ export default function App() {
     }}
   >
     <Canvas>
+   
     <MultipleScenes/>
       <OrbitControls target={[0, 1, 0]} />
       <axesHelper args={[5]} />
