@@ -70,6 +70,20 @@ function ContactShadowsHelper(){
     );
 
   }
+
+  function LoadModel2()
+  {
+   
+    const { scene } = useLoader(GLTFLoader, './Chair.glb');
+    const { scene: defaultScene } = useThree(); // This is the main scene from the r3f context
+    defaultScene.add(scene);
+    //const gltf = useLoader(GLTFLoader, './drawer.glb')
+    
+    return(<> 
+    </>
+    );
+
+  }
 export default function App() {
 
  
@@ -89,7 +103,7 @@ export default function App() {
     <ContactShadowsHelper/>
     <LoadModel/>
     <LoadModel1/>
-    
+    <LoadModel2/>
       
       <OrbitControls target={[0, 1, 0]} />
       <axesHelper args={[5]} />
