@@ -1,52 +1,12 @@
 import * as React from "react";
 import * as THREE from "three";
-import { Environment } from '@react-three/drei'
-// import the canvas element from r3f
 import {Stats, OrbitControls, Circle, ContactShadows} from "@react-three/drei"
 import { Canvas, useLoader, useThree, useFrame  } from "@react-three/fiber";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { useControls } from "leva"
-import { useRef, useMemo, useEffect } from "react";
+
+import { useRef } from "react";
 import { useLayoutEffect } from "react";
-const circlePositions = [
-  [5, 5, 5],
-  [-5, 5, 5],
-  [5, -5, 5],
-  [-5, -5, 5],
-];
-function ContactShadowsHelper(){
-  const {frame , width, height, opacity , scale , blur , far ,near,  resolution , color, position} = useControls("Contact Shadows",{
-      frame : 1,
-      width: 20,
-      height : 20,
-      opacity : 1,
-      scale : 10,
-      blur : 1,
-      far : 2,
-      near : -0.35,
-      resolution : 1024,
-      color : "#000000",
-      position : {
-          value : {x:0,y:0.01,z:0},
-          step : 0.01
-      }
-  })
-  return (
-      <>
-          <ContactShadows
-              frame = {frame}
-              opacity = {opacity}
-              scale = {scale}
-              blur = {blur}
-              far = {far}
-              resolution = {resolution}
-              color = {color}
-              position = {[position.x,position.y,position.z]}
-              near = {near}
-              />
-      </>
-  )
-  }
+
   function LoadRoom()
   {
     var textureLoader = new THREE.TextureLoader();
@@ -76,20 +36,16 @@ function ContactShadowsHelper(){
     />
     );
   }
-  function LoadModel1()
+  function LoadDrawer()
   {
 
     
     var textureLoader = new THREE.TextureLoader();
-    var texture = textureLoader.load('./gymHdri.exr');
+    var texture = textureLoader.load('./pic.jpg');
     texture.mapping = THREE.EquirectangularReflectionMapping;
 
-    console.log("texture");
-
     const gltf = useLoader(GLTFLoader, './drawer.glb');
-    // const { scene: defaultScene } = useThree(); // This is the main scene from the r3f context
-    // defaultScene.add(scene);
-    //const gltf = useLoader(GLTFLoader, './drawer.glb')
+    
     gltf.scene.traverse(function (child) {
       if (child.isMesh) {
         if (child.name === "dimension_geo") {
@@ -106,69 +62,7 @@ function ContactShadowsHelper(){
     />
     );
   }
-  function LoadModel2()
-  {
-    const gltf = useLoader(GLTFLoader, './Chair.glb');
-    // const { scene: defaultScene } = useThree(); // This is the main scene from the r3f context
-    // defaultScene.add(scene);
-    //const gltf = useLoader(GLTFLoader, './drawer.glb')
-    gltf.scene.traverse(function (child) {
-      if (child.isMesh) {
-        if (child.name === "dimension_geo") {
-          child.visible = false;
-        }
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-    return(<primitive
-      object={gltf.scene}
-      position={[0, 0, 3]}
-    />
-    );
-  }
-  function LoadModel3()
-  {
-    const gltf = useLoader(GLTFLoader, './monkey.glb');
-    // const { scene: defaultScene } = useThree(); // This is the main scene from the r3f context
-    // defaultScene.add(scene);
-    //const gltf = useLoader(GLTFLoader, './drawer.glb')
-    gltf.scene.traverse(function (child) {
-      if (child.isMesh) {
-        if (child.name === "dimension_geo") {
-          child.visible = false;
-        }
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-    return(<primitive
-      object={gltf.scene}
-      position={[0, 0, 3]}
-    />
-    );
-  }
-  function LoadModel4()
-  {
-    const gltf = useLoader(GLTFLoader, './damaged_helmet.glb');
-    // const { scene: defaultScene } = useThree(); // This is the main scene from the r3f context
-    // defaultScene.add(scene);
-    //const gltf = useLoader(GLTFLoader, './drawer.glb')
-    gltf.scene.traverse(function (child) {
-      if (child.isMesh) {
-        if (child.name === "dimension_geo") {
-          child.visible = false;
-        }
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-    return(<primitive
-      object={gltf.scene}
-      position={[-1, 0, 3]}
-    />
-    );
-  }
+ 
   function MainScene({ camera }) {
     const scene = useRef();
     useFrame(
@@ -177,7 +71,6 @@ function ContactShadowsHelper(){
     );
     return (
       <scene ref={scene}>
-       
        <LoadRoom/>
       </scene>
     );
@@ -187,38 +80,19 @@ function ContactShadowsHelper(){
   castShadow />*/
   
   function HeadsUpDisplay({ camera }) {
-    const sceneRef = useRef();
-    const sceneMemoized = useMemo(() => {
-      const scene = new THREE.Scene();
-      const gltf = useLoader(GLTFLoader, './drawer.glb');
-      gltf.scene.z = 3;
-    // const { scene: defaultScene } = useThree(); // This is the main scene from the r3f context
-    // defaultScene.add(scene);
-    //const gltf = useLoader(GLTFLoader, './drawer.glb')
-    gltf.scene.traverse(function (child) {
-      if (child.isMesh) {
-        if (child.name === "dimension_geo") {
-          child.visible = false;
-        }
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-    scene.add(gltf.scene);
-      return(scene);
-    }, []);
-    useEffect(() => {
-      if (sceneRef.current) {
-        sceneRef.current.copy(sceneMemoized, true);
-        sceneRef.current.updateMatrixWorld(true);
-       
-      }
-    }, []);
+    const scene = useRef();
     useFrame(
-      ({ gl }) =>
-        void ((gl.autoClear = false), gl.render(sceneRef.current, camera))
+      ({ gl }) => void ((gl.autoClear = false), gl.render(scene.current, camera)),
+      true
     );
-    return <scene ref={sceneRef} />;
+    return (
+      <scene ref={scene}>
+          <directionalLight position={[3.3, 1.0, 4.4]}  shadow-mapSize-width = {2048} shadow-mapSize-height = {2048}
+  castShadow />
+  
+       <LoadDrawer/>
+      </scene>
+    );
   }
  function MultipleScenes()
  {
