@@ -5,7 +5,11 @@ import { useRef } from 'react'
 // import the canvas element from r3f
 import { Canvas } from "@react-three/fiber";
 import Cube from "./Three-Code/Cube";
-
+import LightTracer from "../LightTracer";
+const onCreated = (state) => {
+  // Access the canvas element and set its ID
+  state.gl.domElement.id = 'myCanvasId';
+};
 export default function App() {
   return (
     <div
@@ -18,11 +22,9 @@ export default function App() {
     }}
   >
     // create the canvas
-    <Canvas>
-      
-     
-   
-      <Cube/>
+    <Canvas
+     onCreated={onCreated}>
+      <LightTracer />
     </Canvas>
     </div>
   );
