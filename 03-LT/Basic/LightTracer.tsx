@@ -63,11 +63,12 @@ const setupScene = ({ gltfModel, api, glApiRenderer, scene, camera, renderer }: 
         roughness: 0.0,
     });
 
-
+    camera.position.set(0,0,120);
     let torusMesh = new THREE.Mesh(geometry, material);
     torusMesh.name = "Torus";
     scene.add(torusMesh);
     console.log("Added the torus mesh");
+    torusMesh.position.set(0,0,-40);
 
     const pmremGenerator = new THREE.PMREMGenerator(renderer);
     pmremGenerator.compileEquirectangularShader();
@@ -173,7 +174,7 @@ const LightTracer = ({ gltfModel }: any) => {
 
 
     useEffect(() => {
-
+        camera.position.set(0,0,120);
         // Access the camera's matrix
         setcameraPreviousMatrix(camera.matrixWorld)
         // Use the camera matrix as needed
@@ -189,6 +190,7 @@ const LightTracer = ({ gltfModel }: any) => {
                 && a.every((val, index) => Math.abs(val - b[index]) < 1e-5)
             );
         }
+
         camera.updateMatrix();
         if (useLT) {
 
@@ -223,7 +225,7 @@ const LightTracer = ({ gltfModel }: any) => {
         }
         console.log(spp);
 
-    });
+    },1);
 
     return null;
 };
